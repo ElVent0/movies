@@ -24,7 +24,7 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
     isGenreCheckedAny,
   } = useFilterLists();
 
-  // Хук для визначення фінальної версії списку фільмів для відображення (Тут же фільтрація)
+  // Хук для визначення фінальної версії списку фільмів (Тут же й фільтрація)
   const { resultMoviesList, genresList } = useResultMoviesList(
     movies,
     inputData,
@@ -32,7 +32,7 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
     genreToggles
   );
 
-  // Хук для визначення до якого фільтру відкритий списку чекбоксів
+  // Хук для визначення фільтру, для якого відкритий список чекбоксів
   const { toggleRating, toggleGenre, handleToggleRating, handleToggleGenre } =
     useToggleMenu();
 
