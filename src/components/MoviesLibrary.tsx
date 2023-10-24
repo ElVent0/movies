@@ -1,51 +1,40 @@
-import { FC, useEffect, useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
-import { BsStarFill, BsStarHalf, BsStar } from "react-icons/bs";
+import { FC, useState } from "react";
 import { MovieType } from "../movieType";
+import StarsList from "../components/StarsList";
+import { useResultMoviesList } from "../hooks/useResultMoviesList";
+import { useToggleMenu } from "../hooks/useToggleMenu";
+import { useFilterLists } from "../hooks/useFilterLists";
+import RatingFilter from "./RatingFilter";
+import GenreFilter from "./GenreFilter";
 
 interface MoviesLibraryProps {
   movies: MovieType[];
 }
 
 const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
-  const [resultMoviesList, setResultMoviesList] = useState<MovieType[]>([]);
+  const [inputData, setInputData] = useState("");
 
-  useEffect(() => {
-    setResultMoviesList(movies);
-  }, [movies]);
+  // Хук для визначення масивів з вибраними чекбоксами для обох фільтрів з ними
+  const {
+    ratingToggles,
+    genreToggles,
+    handleRatingList,
+    handleGenreList,
+    isRatingCheckedAny,
+    isGenreCheckedAny,
+  } = useFilterLists();
 
-  //   console.log(resultMoviesList);
+  // Хук для визначення фінальної версії списку фільмів для відображення (Тут же фільтрація)
+  const { resultMoviesList, genresList } = useResultMoviesList(
+    movies,
+    inputData,
+    ratingToggles,
+    genreToggles
+  );
 
-  const GetStars = ({ stars }) => {
-    const fillStars = Math.floor(stars);
-    const halfStars = Math.round(stars % 1);
-    const emptyStars = Math.floor(10 - stars);
-    return (
-      <ul className="flex gap-0.5">
-        {Array(fillStars)
-          .fill(0)
-          .map((_, index) => (
-            <li key={index}>
-              <BsStarFill />
-            </li>
-          ))}
-        {Array(halfStars)
-          .fill(0)
-          .map((_, index) => (
-            <li key={index}>
-              <BsStarHalf />
-            </li>
-          ))}
-        {Array(emptyStars)
-          .fill(0)
-          .map((_, index) => (
-            <li key={index}>
-              <BsStar />
-            </li>
-          ))}
-      </ul>
-    );
-  };
+  // Хук для визначення до якого фільтру відкритий списку чекбоксів
+  const { toggleRating, toggleGenre, handleToggleRating, handleToggleGenre } =
+    useToggleMenu();
 
   return (
     <div className="flex justify-center pt-10">
@@ -55,48 +44,43 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
             className="border border-black h-full w-80 block px-2"
             type="text"
             placeholder="Enter movie name"
+            value={inputData}
+            onChange={(e) => {
+              setInputData(e.target.value);
+            }}
           />
           <ul className="absolute mt-1 border border-black">
-            {resultMoviesList.map((item, index) => (
-              <li key={index} className=" w-80 flex p-2 items-center">
-                <div className="">
-                  <p className="font-bold">{item.title}</p>
-                  <GetStars stars={item.rating} />
-                </div>
-                <p className="ml-auto text-gray-800">{item.category}</p>
-              </li>
-            ))}
+            {resultMoviesList &&
+              resultMoviesList.length > 0 &&
+              resultMoviesList.map((item, index) => (
+                <li key={index} className=" w-80 flex p-2 items-center">
+                  <div className="">
+                    <p className="font-bold">{item.title}</p>
+                    <StarsList stars={item.rating} />
+                  </div>
+                  <p className="ml-auto text-gray-800">{item.category}</p>
+                </li>
+              ))}
           </ul>
         </li>
         <li className="h-full relative">
-          <button className="border border-black h-full w-28 flex gap-6 items-center justify-center">
-            <p className="">Rating</p>
-            <IoIosArrowDown />
-          </button>
-          <ul className="border border-black mt-1 absolute w-56 p-2">a</ul>
+          <RatingFilter
+            handleToggleRating={handleToggleRating}
+            toggleRating={toggleRating}
+            handleRatingList={handleRatingList}
+            isRatingCheckedAny={isRatingCheckedAny}
+            ratingToggles={ratingToggles}
+          />
         </li>
         <li className="h-full relative">
-          <button className="border border-black h-full w-28 flex gap-6 items-center justify-center">
-            <p className="">Genre</p>
-            <IoIosArrowDown />
-          </button>
-          {/* <ul className="border border-black mt-1 absolute w-28 p-2">
-            <li>
-              <input type="checkbox" id="Ane genre" /> Ane genre
-            </li>
-            <li>
-              <input type="checkbox" id="Action" /> Action
-            </li>
-            <li>
-              <input type="checkbox" id="Comedy" /> Comedy
-            </li>
-            <li>
-              <input type="checkbox" id="Drama" /> Drama
-            </li>
-            <li>
-              <input type="checkbox" id="Thriller" /> Thriller
-            </li>
-          </ul> */}
+          <GenreFilter
+            handleToggleGenre={handleToggleGenre}
+            toggleGenre={toggleGenre}
+            handleGenreList={handleGenreList}
+            isGenreCheckedAny={isGenreCheckedAny}
+            genresList={genresList}
+            genreToggles={genreToggles}
+          />
         </li>
       </ul>
     </div>
