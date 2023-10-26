@@ -36,7 +36,7 @@ const RatingFilter: FC<RatingFilterProps> = ({
               onChange={(e) => handleRatingList(e)}
               checked={isRatingCheckedAny}
             />{" "}
-            Any genre
+            Any rating
           </li>
           {[...Array(10).keys()].map((item) => {
             const isChecked = ratingToggles.includes(`${item + 1}`);

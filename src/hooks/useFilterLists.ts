@@ -5,33 +5,39 @@ export const useFilterLists = () => {
   const [genreToggles, setGenreToggles] = useState(["any"]);
 
   const handleRatingList = (e: ChangeEvent<HTMLInputElement>) => {
+    const id = e.target.id;
     let resultArrey;
 
-    if (ratingToggles.includes(e.target.id)) {
-      resultArrey = ratingToggles.filter((item) => item !== e.target.id);
-    } else if (e.target.id === "any") {
-      resultArrey = [e.target.id];
+    if (ratingToggles.includes(id)) {
+      resultArrey = ratingToggles.filter((item) => item !== id);
     } else {
       resultArrey = ratingToggles.filter((item) => item !== "any");
-      resultArrey = [...resultArrey, e.target.id];
+      resultArrey = id !== "any" ? [...resultArrey, id] : [id];
     }
 
-    setRatingToggles(resultArrey);
+    if (!resultArrey.length) {
+      setRatingToggles(["any"]);
+    } else {
+      setRatingToggles(resultArrey);
+    }
   };
 
   const handleGenreList = (e: ChangeEvent<HTMLInputElement>) => {
+    const id = e.target.id;
     let resultArrey;
 
-    if (genreToggles.includes(e.target.id)) {
-      resultArrey = genreToggles.filter((item) => item !== e.target.id);
-    } else if (e.target.id === "any") {
-      resultArrey = [e.target.id];
+    if (genreToggles.includes(id)) {
+      resultArrey = genreToggles.filter((item) => item !== id);
     } else {
       resultArrey = genreToggles.filter((item) => item !== "any");
-      resultArrey = [...resultArrey, e.target.id];
+      resultArrey = id !== "any" ? [...resultArrey, id] : [id];
     }
 
-    setGenreToggles(resultArrey);
+    if (!resultArrey.length) {
+      setGenreToggles(["any"]);
+    } else {
+      setGenreToggles(resultArrey);
+    }
   };
 
   const isRatingCheckedAny = ratingToggles.includes(`any`);

@@ -12,34 +12,22 @@ export const useResultMoviesList = (
     ...new Set(movies.map((item) => item.category)),
   ]);
   useEffect(() => {
-    if (inputData === "") {
-      setResultMoviesList([]);
-      return;
-    }
-
-    let resultMovies;
-
-    resultMovies = movies.filter((item) => {
-      return item.title
-        .toLocaleLowerCase()
-        .includes(inputData.toLocaleLowerCase());
-    });
-
-    if (ratingToggles.length > 0) {
-      if (!ratingToggles.includes("any")) {
-        resultMovies = resultMovies.filter((item) => {
-          return ratingToggles.includes(item.rating.split(".")[0]);
-        });
-      }
-    }
-
-    if (genreToggles.length > 0) {
-      if (!genreToggles.includes("any")) {
-        resultMovies = resultMovies.filter((item) => {
-          return genreToggles.includes(item.category);
-        });
-      }
-    }
+    const resultMovies = movies
+      .filter((item) => {
+        return item.title
+          .toLocaleLowerCase()
+          .includes(inputData.toLocaleLowerCase());
+      })
+      .filter((item) =>
+        ratingToggles.length && !ratingToggles.includes("any")
+          ? ratingToggles.includes(item.rating.split(".")[0])
+          : item
+      )
+      .filter((item) =>
+        genreToggles.length && !genreToggles.includes("any")
+          ? genreToggles.includes(item.category)
+          : item
+      );
 
     setResultMoviesList(resultMovies);
   }, [genreToggles, inputData, movies, ratingToggles]);

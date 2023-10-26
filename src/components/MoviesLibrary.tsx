@@ -14,7 +14,6 @@ interface MoviesLibraryProps {
 const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
   const [inputData, setInputData] = useState("");
 
-  // Хук для визначення масивів з вибраними чекбоксами для обох фільтрів з ними
   const {
     ratingToggles,
     genreToggles,
@@ -24,7 +23,6 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
     isGenreCheckedAny,
   } = useFilterLists();
 
-  // Хук для визначення фінальної версії списку фільмів (Тут же й фільтрація)
   const { resultMoviesList, genresList } = useResultMoviesList(
     movies,
     inputData,
@@ -32,7 +30,6 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
     genreToggles
   );
 
-  // Хук для визначення фільтру, для якого відкритий список чекбоксів
   const { toggleRating, toggleGenre, handleToggleRating, handleToggleGenre } =
     useToggleMenu();
 
@@ -49,19 +46,19 @@ const MoviesLibrary: FC<MoviesLibraryProps> = ({ movies }) => {
               setInputData(e.target.value);
             }}
           />
-          <ul className="absolute mt-1 border border-black">
-            {resultMoviesList &&
-              resultMoviesList.length > 0 &&
-              resultMoviesList.map((item, index) => (
+          {resultMoviesList && resultMoviesList.length ? (
+            <ul className="absolute mt-1 border border-black">
+              {resultMoviesList.map((item, index) => (
                 <li key={index} className=" w-80 flex p-2 items-center">
-                  <div className="">
+                  <div>
                     <p className="font-bold">{item.title}</p>
                     <StarsList stars={item.rating} />
                   </div>
                   <p className="ml-auto text-gray-800">{item.category}</p>
                 </li>
               ))}
-          </ul>
+            </ul>
+          ) : null}
         </li>
         <li className="h-full relative">
           <RatingFilter
